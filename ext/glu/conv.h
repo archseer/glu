@@ -33,38 +33,6 @@
 #define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->value
 #endif
 
-#define FASTCONV(_name_,_type_,_convfix_,_convfallback_) \
-static inline _type_ _name_(val) \
-VALUE val; \
-{ \
-	if (FIXNUM_P(val)) \
-		return (_type_) _convfix_(val); \
-\
-	if (TYPE(val) == T_FLOAT) \
-		return (_type_)FLOAT_VAL_ACCESS(val); \
-\
-	if ((val) == Qtrue) \
-		return (_type_)(GL_TRUE); \
-\
-	if ((val) == Qfalse || (val) == Qnil) \
-		return (_type_)(GL_FALSE); \
-\
-	return (_convfallback_(val)); \
-}
-
-FASTCONV(num2double,double,FIX2LONG,rb_num2dbl)
-#if SIZEOF_INT < SIZEOF_LONG
-/* For 64bit platforms with LP64 mode */
-FASTCONV(num2int,long,FIX2LONG,rb_num2int)
-FASTCONV(num2uint,unsigned long,FIX2ULONG,rb_num2uint)
-#else
-/* All other platforms */
-FASTCONV(num2int,long,FIX2LONG,(int)NUM2LONG)
-FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
-#endif
-
-#undef FASTCONV
-
 /* For conversion between ruby and GL boolean values */
 #define GLBOOL2RUBY(x) \
 	(x) == GL_TRUE ? Qtrue : ((x)==GL_FALSE ? Qfalse : INT2NUM((x)))
@@ -172,73 +140,6 @@ ARY2CMAT(double)
 ARY2CMAT(float)
 #undef ARY2CMAT
 
-#define ARY2CMATCNT(_type_) \
-static inline void ary2cmat##_type_##count(rary, cary, cols, rows) \
-VALUE rary; \
-_type_ cary[]; \
-int cols,rows; \
-{ \
-	int i; \
-\
-	rary = rb_Array(rary); \
-	rary = rb_funcall(rary,rb_intern("flatten"),0); \
-\
-	if (RARRAY_LEN(rary)<1 || (RARRAY_LEN(rary) % (cols*rows) != 0)) {\
-		xfree(cary); \
-		rb_raise(rb_eArgError, "passed array/matrix must conatain n x (%i*%i) elements",cols,rows); \
-	} \
-\
-	for (i=0; i < RARRAY_LEN(rary); i++) \
-		cary[i] = (_type_) NUM2DBL(rb_ary_entry(rary,i)); \
-}
-
-ARY2CMATCNT(double)
-ARY2CMATCNT(float)
-#undef ARY2CMATCNT
-
 #define EMPTY
 #define FREE(_x_) xfree(_x_);
 
-#define RET_ARRAY_OR_SINGLE(_name_, _size_, _conv_, _params_) \
-	RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, EMPTY)
-
-#define RET_ARRAY_OR_SINGLE_FREE(_name, _size_, _conv_, _params_) \
-	RET_ARRAY_OR_SINGLE_FUNC(_name, _size_, _conv_, _params_, FREE(_params_))
-
-#define RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, _extra_) \
-do { \
-	int iter; \
-	VALUE return_array; \
-	if (_size_ == 1) { \
-		return_array = _conv_(_params_[0]); \
-	} else { \
-		return_array = rb_ary_new2(_size_); \
-		for(iter=0;iter<_size_;iter++) \
-		rb_ary_push(return_array, _conv_(_params_[iter])); \
-	} \
-	_extra_ \
-	CHECK_GLERROR_FROM(_name_); \
-	return return_array; \
-} while (0)
-
-#define RET_ARRAY_OR_SINGLE_BOOL(_name_, _size_, _conv_, _enum_, _params_) \
-	RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, EMPTY)
-
-#define RET_ARRAY_OR_SINGLE_BOOL_FREE(_name_, _size_, _conv_, _enum_, _params_) \
-	RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, FREE(_params_))
-
-#define RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, _extra_) \
-do { \
-	int iter; \
-	VALUE return_array; \
-	if (_size_ == 1) { \
-		return_array = _conv_(_enum_,_params_[0]); \
-	} else { \
-		return_array = rb_ary_new2(_size_); \
-		for(iter=0;iter<_size_;iter++) \
-			rb_ary_push(return_array, _conv_(_enum_,_params_[iter])); \
-	} \
-	_extra_ \
-	CHECK_GLERROR_FROM(_name_); \
-	return return_array; \
-} while (0)
