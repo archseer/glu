@@ -25,22 +25,8 @@
 #include <ruby.h>
 #include "extconf.h"
 
-#include <ctype.h>
-
 #ifdef HAVE_OPENGL_GLU_H
 #include <OpenGL/glu.h>
-#endif
-
-#ifdef HAVE_DLFCN_H
-#include <dlfcn.h>
-#endif
-#if false
-#include <stdlib.h>
-#include <string.h>
-#endif
-
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
 #endif
 
 #ifdef HAVE_GL_GLU_H
@@ -49,10 +35,6 @@
 
 #include "glu-enums.h"
 #include "conv.h"
-
-#ifndef APIENTRY
-#define APIENTRY
-#endif
 
 #ifndef CALLBACK
 #define CALLBACK
