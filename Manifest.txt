@@ -1,0 +1,17 @@
+.autotest
+.gemtest
+.gitignore
+History.rdoc
+MIT-LICENSE
+Manifest.txt
+README.rdoc
+Rakefile
+ext/glu/common.h
+ext/glu/conv.h
+ext/glu/extconf.rb
+ext/glu/glu-enums.c
+ext/glu/glu-enums.h
+ext/glu/glu.c
+lib/glu.rb
+lib/glu/dummy.rb
+test/test_glu.rb
