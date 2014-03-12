@@ -304,6 +304,7 @@ VALUE obj;
   GLint uorder;
   GLfloat *ctlarray;
   GLenum type;
+  GLfloat **gms_ptr;
 
   VALUE args[7];
   VALUE ary_ctl1;
@@ -341,7 +342,8 @@ VALUE obj;
   gluNurbsCurve(ndata->nobj, uknot_count, uknot, u_stride, ctlarray, uorder, type);
 
   /* store the pointers */
-  gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=2);
+  gms_ptr = gms.ptr;
+  gms.ptr = REALLOC_N(gms_ptr, GLfloat*, gms.len+=2);
   gms.ptr[gms.len - 2] = uknot;
   gms.ptr[gms.len - 1] = ctlarray;
 
@@ -394,6 +396,7 @@ VALUE obj;
   GLint sorder;
   GLint torder;
   GLenum type;
+  GLfloat **gms_ptr;
 
   VALUE args[11];
   VALUE ary_ctl1;
@@ -450,7 +453,8 @@ VALUE obj;
 
   /* store the pointers */
 
-  gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=3);
+  gms_ptr = gms.ptr;
+  gms.ptr = REALLOC_N(gms_ptr, GLfloat*, gms.len+=3);
   gms.ptr[gms.len-3] = sknot;
   gms.ptr[gms.len-2] = tknot;
   gms.ptr[gms.len-1] = ctlarray;
