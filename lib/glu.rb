@@ -1,4 +1,9 @@
-require 'glu/glu'
+begin
+  RUBY_VERSION =~ /(\d+.\d+)/
+  require "glu/#{$1}/glu"
+rescue LoadError
+  require 'glu/glu'
+end
 
 include Glu
 
