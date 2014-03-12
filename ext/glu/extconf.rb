@@ -18,13 +18,16 @@ if ENV['CROSS_COMPILING']
 end
 
 ok =
-   have_library('glu32.lib',    'gluLookAt') ||
-   have_library('glu32') ||
-   have_library('GLU',  'gluLookAt')
+  (have_library('opengl32.lib', 'glVertex3d') &&
+   have_library('glu32.lib',    'gluLookAt')) ||
+  (have_library('opengl32') &&
+   have_library('glu32')) ||
+  (have_library('GL',   'glVertex3d') &&
+   have_library('GLU',  'gluLookAt'))
 
 ok &&=
-  have_header('GL/glu.h') ||
-  have_header('OpenGL/glu.h') # OS X
+  (have_header('GL/gl.h') && have_header('GL/glu.h')) ||
+  (have_header('OpenGL/gl.h') && have_header('OpenGL/glu.h')) # OS X
 
 have_struct_member 'struct RFloat', 'float_value'
 

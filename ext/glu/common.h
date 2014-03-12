@@ -25,6 +25,14 @@
 #include <ruby.h>
 #include "extconf.h"
 
+#ifdef HAVE_OPENGL_GL_H
+#include <OpenGL/gl.h>
+#endif
+
+#ifdef HAVE_GL_GL_H
+#include <GL/gl.h>
+#endif
+
 #ifdef HAVE_OPENGL_GLU_H
 #include <OpenGL/glu.h>
 #endif
@@ -33,6 +41,7 @@
 #include <GL/glu.h>
 #endif
 
+#include "gl-enums.h"
 #include "glu-enums.h"
 #include "conv.h"
 
@@ -72,7 +81,7 @@ static inline int glformat_size(GLenum format)
     case GL_LUMINANCE:
     case GL_LUMINANCE_INTEGER_EXT:
       return 1;
-    
+
     case GL_LUMINANCE_ALPHA:
     case GL_LUMINANCE_ALPHA_INTEGER_EXT:
     case GL_422_EXT:
@@ -89,7 +98,7 @@ static inline int glformat_size(GLenum format)
     case GL_DU8DV8_ATI:
     case GL_FORMAT_SUBSAMPLE_24_24_OML:
       return 2;
-    
+
     case GL_RGB:
     case GL_RGB_INTEGER_EXT:
     case GL_BGR_EXT:
@@ -98,7 +107,7 @@ static inline int glformat_size(GLenum format)
     case GL_DSDT_MAG_NV:
     case GL_FORMAT_SUBSAMPLE_244_244_OML:
       return 3;
-    
+
     case GL_RGBA:
     case GL_RGBA_INTEGER_EXT:
     case GL_BGRA_EXT:
@@ -128,9 +137,9 @@ static inline int glformat_size(GLenum format)
 static inline int gltype_glformat_unit_size(GLenum type,GLenum format)
 {
   unsigned int format_size;
-  
+
   format_size = glformat_size(format);
-  
+
   switch(type)
   {
     case GL_BYTE:
@@ -175,7 +184,7 @@ static inline int gltype_glformat_unit_size(GLenum type,GLenum format)
     case GL_UNSIGNED_INT_5_9_9_9_REV_EXT:
     case GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV:
       return 4;
-  
+
     default:
       rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
       return -1; /* not reached */
@@ -188,7 +197,7 @@ static inline int GetDataSize(GLenum type,GLenum format,int num)
   int unit_size;
 
   unit_size = gltype_glformat_unit_size(type,format);
-  
+
   if (type==GL_BITMAP)
     size = unit_size*(num/8); /* FIXME account for alignment */
   else
@@ -204,7 +213,7 @@ static inline void CheckDataSize(GLenum type,GLenum format,int num,VALUE data)
   int size;
 
   size = GetDataSize(type,format,num);
-  
+
   if (RSTRING_LEN(data) < size)
     rb_raise(rb_eArgError, "Length of specified data doesn't correspond to format and type parameters passed. Calculated length: %i",size);
 }
