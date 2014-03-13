@@ -1,6 +1,7 @@
 .autotest
 .gemtest
 .gitignore
+.travis.yml
 History.rdoc
 MIT-LICENSE
 Manifest.txt
@@ -14,4 +15,5 @@ ext/glu/glu-enums.h
 ext/glu/glu.c
 lib/glu.rb
 lib/glu/dummy.rb
+test/dummy.xorg.conf
 test/test_glu.rb
