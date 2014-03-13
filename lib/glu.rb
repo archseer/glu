@@ -5,8 +5,6 @@ rescue LoadError
   require 'glu/glu'
 end
 
-include Glu
-
 # (Glu.)gluSphere -> GLU.Sphere
 # (Glu::)GLU_INSIDE -> GLU::INSIDE
 module GLU
