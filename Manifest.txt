@@ -10,6 +10,7 @@ Rakefile
 ext/glu/common.h
 ext/glu/conv.h
 ext/glu/extconf.rb
+ext/glu/gl-enums.h
 ext/glu/glu-enums.c
 ext/glu/glu-enums.h
 ext/glu/glu.c
