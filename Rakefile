@@ -43,7 +43,18 @@ Rake::ExtensionTask.new 'glu', hoe.spec do |ext|
   ext.lib_dir = 'lib/glu'
 
   ext.cross_compile = true
-  ext.cross_platform = ['i386-mingw32', 'x64-mingw32']
+  ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
+end
+
+# To reduce the gem file size strip mingw32 dlls before packaging
+ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
+  task "copy:glu:x86-mingw32:#{ruby_version}" do |t|
+    sh "i686-w64-mingw32-strip -S tmp/x86-mingw32/stage/lib/glu/#{ruby_version[/^\d+\.\d+/]}/glu.so"
+  end
+
+  task "copy:glu:x64-mingw32:#{ruby_version}" do |t|
+    sh "x86_64-w64-mingw32-strip -S tmp/x64-mingw32/stage/lib/glu/#{ruby_version[/^\d+\.\d+/]}/glu.so"
+  end
 end
 
 task :test => :compile
