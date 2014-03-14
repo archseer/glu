@@ -1,3 +1,8 @@
-== 8.1.0
+=== 8.2.0 / 2014-03-14
+
+* Add x64-mingw platform for cross build and add ruby-2.0.0 to binary gems.
+* Don't pollute the global namespace. Use GLU namespace.
+
+=== 8.1.0 / 2013-03-03
 
 Split Glu into a separate gem.
