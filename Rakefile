@@ -21,7 +21,7 @@ require 'rake/extensiontask'
 hoe = Hoe.spec 'glu' do
   developer 'Eric Hodel', 'drbrain@segment7.net'
   developer 'Lars Kanis',  ''
-  developer 'Blaž Hrastnik', 'speed.the.bboy@gmail.com'
+  developer 'Blaž Hrastnik', 'blaz.hrast@gmail.com'
   developer 'Alain Hoang', ''
   developer 'Jan Dvorak',  ''
   developer 'Minh Thu Vo', ''
